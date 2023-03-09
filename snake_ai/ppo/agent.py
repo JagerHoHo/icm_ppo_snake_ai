@@ -105,15 +105,3 @@ class PPOAgent:
         value = value.numpy().item()
         log_prob = distribution.log_prob(action).numpy().item()
         return action, log_prob, value
-
-
-if __name__ == '__main__':
-    a = PPOAgent()
-    b = np.zeros((50, 50))
-    b[0, 0] = 1
-    b = b.reshape((1, 50, 50, 1))
-    c = np.zeros((1, 4))
-    action, log_prob, value = a.choose_action(b, c)
-    print(action, log_prob, value)
-    # print(action)
-    # a.save_model('')
