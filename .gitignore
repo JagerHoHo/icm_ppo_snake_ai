@@ -1,0 +1,10 @@
+/.vscode
+/env
+/logs
+/main.ipynb
+/requirements.txt
+/snake_AI.egg-info
+/snake_c++
+/test.ipynb
+/test.py
+/test2.py
