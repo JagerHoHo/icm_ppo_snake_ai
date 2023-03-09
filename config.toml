@@ -12,7 +12,7 @@ clip_factor = 0.3
 n_epochs = 10
 batch_size = 5
 buffer_size = 20
-n_iter = 1000
+n_iter = 0
 value_loss_coef = 0.5
 entropy_loss_coef = 0.1
 

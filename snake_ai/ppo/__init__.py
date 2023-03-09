@@ -1,4 +1,5 @@
 from datetime import datetime
+from itertools import count
 
 import tensorflow as tf
 import toml
@@ -18,22 +19,25 @@ class PPOTrainer:
 
     def train(self) -> None:
         summary_writer = tf.summary.create_file_writer(f'{self.log_dir}train/{datetime.now().strftime("%Y%m%d-%H%M%S")}')
-        for i in range(self.n_iter):
+        looper = range(self.n_iter) if self.n_iter else count()
+        for i in looper:
             board, direction = self.env.reset()
             done = False
-            score = 0
+            total_score = 0
             while not done:
                 action, prob, val = self.agent.choose_action(board, direction)
                 (next_board, next_direction), reward, done = self.env.step(action)
-                score += reward
+                total_score += reward
                 self.agent.store_transition(board, direction, action, prob, val, reward, done)
                 if self.agent.reply_buffer.is_full:
                     self.agent.set_last_last_board(next_board)
                     self.agent.learn()
                 board, direction = next_board, next_direction
             with summary_writer.as_default():
-                tf.summary.scalar('total score', score, step=i)
-            print(score)
+                tf.summary.scalar('total score', total_score, step=i)
+            print(total_score)
+            if i % 100 == 0:
+                self.agent.save_model()
 
 
 if __name__ == '__main__':
