@@ -1,6 +1,4 @@
 from collections import deque
-from dataclasses import dataclass
-from dataclasses import field
 from itertools import combinations_with_replacement
 from random import randint
 from random import shuffle
@@ -12,27 +10,19 @@ import toml
 from snake_game.point import Point
 from snake_game.snake import Snake
 
-State = tuple[NDArray[np.float32], NDArray[np.float32]]
 
-
-@dataclass
 class SnakeGame:
-    SIZE: int = field(init=False)
-    _food_poses: deque[Point] = field(init=False)
-    _food: Point = field(init=False)
-    _snake: Snake = field(init=False)
-    _WINNING_REWARD: float = field(init=False)
-    _EATEN_FOOD_REWARD: float = field(init=False)
-    _EARLY_DONE_PENALTY: float = field(init=False)
-    _LIVING_PENALTY: float = field(init=False)
+    State = tuple[NDArray[np.float32], NDArray[np.float32]]
+    __slots__ = ('SIZE', '_WINNING_REWARD', '_EATEN_FOOD_REWARD', '_EARLY_DONE_PENALTY', '_LIVING_PENALTY', '_snake',
+                 '_food_poses', '_food')
 
-    def __post_init__(self) -> None:
+    def __init__(self) -> None:
         config = toml.load("config.toml")
-        self.SIZE = config["snake_game"]["size"]
-        self._WINNING_REWARD = config["snake_game"]["winning_reward"]
-        self._EATEN_FOOD_REWARD = config["snake_game"]["eaten_food_reward"]
-        self._EARLY_DONE_PENALTY = config["snake_game"]["early_done_penalty"]
-        self._LIVING_PENALTY = config["snake_game"]["living_penalty"]
+        self.SIZE: int = config["snake_game"]["size"]
+        self._WINNING_REWARD: float = config["snake_game"]["winning_reward"]
+        self._EATEN_FOOD_REWARD: float = config["snake_game"]["eaten_food_reward"]
+        self._EARLY_DONE_PENALTY: float = config["snake_game"]["early_done_penalty"]
+        self._LIVING_PENALTY: float = config["snake_game"]["living_penalty"]
         self.reset()
 
     @property
@@ -51,15 +41,16 @@ class SnakeGame:
 
     @property
     def _state(self) -> State:
-        board = np.zeros((4, self.SIZE + 2, self.SIZE + 2), dtype=np.float32)
-        board[0, ...] = np.pad(np.zeros((self.SIZE, self.SIZE)), ((1, 1), (1, 1)), constant_values=1)
+        board = np.zeros((5, self.SIZE + 2, self.SIZE + 2), dtype=np.bool8)
+        board[0, ...] = np.pad(np.zeros((self.SIZE, self.SIZE)), ((1, 1), (1, 1)), constant_values=True)
         x, y = self._snake.head
-        board[1, y, x] = 1
+        board[1, y, x] = True
         for x, y in self._snake.body:
-            board[2, y, x] = 1
+            board[2, y, x] = True
         x, y = self._food
-        board[3, y, x] = 1
-        return (board, self._snake.direction_one_hot)
+        board[3, y, x] = True
+        board[4] = ~(board[0] | board[1] | board[2] | board[3])
+        return (board.astype(np.float32), self._snake.direction_one_hot)
 
     def reset(self) -> State:
         x, y = randint(1, self.SIZE), randint(1, self.SIZE)

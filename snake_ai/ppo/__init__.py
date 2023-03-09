@@ -1,5 +1,3 @@
-from dataclasses import dataclass
-from dataclasses import field
 from datetime import datetime
 
 import tensorflow as tf
@@ -9,22 +7,15 @@ from snake_ai.ppo.agent import PPOAgent
 from snake_game import SnakeGame
 
 
-@dataclass
 class PPOTrainer:
-    env: SnakeGame = field(init=False)
-    agent: PPOAgent = field(init=False)
-    n_iter: int = field(init=False)
-    log_dir: str = field(init=False, default="logs/")
 
-    #more input channels
-
-    def __post_init__(self) -> None:
+    def __init__(self) -> None:
         config = toml.load("config.toml")
         self.n_iter = config["ppo"]["n_iter"]
         self.env = SnakeGame()
         self.agent = PPOAgent()
+        self.log_dir = "logs/"
 
-    #save last next in a var
     def train(self) -> None:
         summary_writer = tf.summary.create_file_writer(f'{self.log_dir}train/{datetime.now().strftime("%Y%m%d-%H%M%S")}')
         for i in range(self.n_iter):

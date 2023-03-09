@@ -33,6 +33,9 @@ class Snake:
     direction: Direction = field(init=False, default=Direction.CENTER)
     _starve_count: int = field(init=False, default=0)
 
+    def __len__(self) -> int:
+        return len(self.body) + 1
+
     def __iter__(self) -> Generator[Point, None, None]:
         yield self.head
         yield from self.body
@@ -56,6 +59,12 @@ class Snake:
         elif self.direction == Direction.RIGHT:
             self.head.x += 1
 
+    def reset_starve_count(self) -> None:
+        self._starve_count = 0
+
+    def leave_tail_point(self) -> None:
+        self.body.pop()
+
     @property
     def clash_into_self(self) -> bool:
         return self.head in self.body
@@ -72,12 +81,3 @@ class Snake:
     @property
     def starved(self) -> bool:
         return self._starve_count >= self.starve_endurance
-
-    def __len__(self) -> int:
-        return len(self.body) + 1
-
-    def reset_starve_count(self) -> None:
-        self._starve_count = 0
-
-    def leave_tail_point(self) -> None:
-        self.body.pop()

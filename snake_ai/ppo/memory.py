@@ -11,7 +11,7 @@ from numpy.typing import NDArray
 Batch = tuple[NDArray[float32], NDArray[float32], NDArray[float32], NDArray[float32], NDArray[bool8], NDArray[int32]]
 
 
-@dataclass(slots=True)
+@dataclass
 class PPOMemory:
     batch_size: int
     buffer_size: int
@@ -20,7 +20,6 @@ class PPOMemory:
     board_size: int
     index: int = field(init=False)
     boards: NDArray[float32] = field(init=False)
-    # next_boards: NDArray[float32] = field(init=False)
     directions: NDArray[float32] = field(init=False)
     vals: NDArray[float32] = field(init=False)
     probs: NDArray[float32] = field(init=False)
@@ -33,7 +32,7 @@ class PPOMemory:
         self.clear()
 
     @property
-    def icm_ingredients(self):
+    def icm_ingredients(self) -> tuple[NDArray[float32], NDArray[float32], NDArray[float32]]:
         return self.actions, self.boards, np.vstack([self.boards[1:], self.last_board[np.newaxis, :]])
 
     def _get_gae(self, intrinsic_reward: NDArray[float32] | None = None) -> NDArray[float32]:
@@ -54,7 +53,6 @@ class PPOMemory:
     def append(
         self,
         board: NDArray[float32],
-        # next_board: NDArray[float32],
         direction: NDArray[float32],
         action: float,
         probs: float,
@@ -63,7 +61,6 @@ class PPOMemory:
         done: bool,
     ) -> None:
         self.boards[self.index] = board
-        # self.next_boards[self.index] = next_board
         self.directions[self.index] = direction
         self.actions[self.index] = action
         self.probs[self.index] = probs
@@ -89,22 +86,3 @@ class PPOMemory:
     @property
     def is_full(self) -> bool:
         return self.index == self.buffer_size
-
-
-# if __name__ == '__main__':
-#     m = PPOMemory()
-#     board = np.zeros((50, 50))
-#     direction = np.zeros(4)
-#     for i in range(20):
-#         # nums = i
-#         m.append(board, direction, i, i, i, i, False)
-#     b = m.sample_batches()
-#     board, direction, vals, probs, actions, advantages = b[0]
-#     print(board, direction, vals, probs, actions, advantages)
-#     print(len(b[0]))
-#     from snake_ai.networks import Actor
-
-#state dim
-#split state and dir
-# print(b[0])
-# print(b[0])
