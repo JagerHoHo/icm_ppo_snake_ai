@@ -33,21 +33,18 @@ class PPOAgent:
         self.icm_eta = config["icm"]["eta"]
         self.plots_path = Path('plots/model')
         self.plots_path.mkdir(parents=True, exist_ok=True)
-        self.model = ActorCritic(4, self.game_size)
-        self.icm = ICM(4, self.game_size)
+        self.model: ActorCritic = ActorCritic(4, self.game_size)
+        self.icm: ICM = ICM(4, self.game_size)
         self.reply_buffer = PPOMemory(self.batch_size, self.buffer_size, self.discount_factor, self.gae_factor,
                                       self.game_size + 2)
         self.model.compile(optimizer=tf.keras.mixed_precision.LossScaleOptimizer(tfa.optimizers.AdaBelief(epsilon=1e-12)))
         self.icm.compile(optimizer=tf.keras.mixed_precision.LossScaleOptimizer(tfa.optimizers.AdaBelief()))
 
-    # def save_model(self, id_) -> None:
-    #     self.actor.save(f'{self.models_path}/actor{id_}')
-    #     self.critic.save(f'{self.models_path}/critic{id_}')
+    def save_model(self) -> None:
+        self.model.save('models/ppo')
 
     def load_model(self) -> None:
-        pass
-        # self.actor.load_weights(f'{self.models_path}/actor')
-        # self.critic.load_weights(f'{self.models_path}/critic')
+        self.model = tf.keras.models.load_model('models/ppo')
 
     def set_last_last_board(self, board: NDArray[np.float32]) -> None:
         self.reply_buffer.set_last_last_board(board)
