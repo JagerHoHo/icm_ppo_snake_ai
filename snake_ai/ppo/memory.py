@@ -70,8 +70,8 @@ class PPOMemory:
         self.index += 1
 
     def clear(self) -> None:
-        self.boards = np.empty((self.buffer_size, 4, self.board_size, self.board_size), dtype=float32)
-        self.last_board = np.empty((4, self.board_size, self.board_size), dtype=float32)
+        self.boards = np.empty((self.buffer_size, 5, self.board_size, self.board_size), dtype=float32)
+        self.last_board = np.empty((5, self.board_size, self.board_size), dtype=float32)
         self.directions = np.empty((self.buffer_size, 4), dtype=float32)
         self.actions = np.empty((self.buffer_size, 1), dtype=float32)
         self.probs = np.empty(self.buffer_size, dtype=float32)
