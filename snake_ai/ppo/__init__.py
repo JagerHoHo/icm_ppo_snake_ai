@@ -15,10 +15,9 @@ class PPOTrainer:
         self.n_iter = config["ppo"]["n_iter"]
         self.env = SnakeGame()
         self.agent = PPOAgent()
-        self.log_dir = "logs/"
 
     def train(self) -> None:
-        summary_writer = tf.summary.create_file_writer(f'{self.log_dir}train/{datetime.now().strftime("%Y%m%d-%H%M%S")}')
+        summary_writer = tf.summary.create_file_writer(f'logs/{datetime.now().strftime("%Y%m%d-%H%M%S")}')
         looper = range(self.n_iter) if self.n_iter else count()
         for i in looper:
             board, direction = self.env.reset()
