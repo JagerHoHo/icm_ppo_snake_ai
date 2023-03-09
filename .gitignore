@@ -8,4 +8,5 @@
 /test.ipynb
 /test.py
 /test2.py
-/__pycache__
+**/__pycache__/
+**/**.pyc

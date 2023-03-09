@@ -7,7 +7,7 @@ class ActorCritic(tf.keras.Model):
     def __init__(self, n_actions: int, size: int) -> None:
         super().__init__()
         self.size = size + 2
-        self.conv1 = tf.keras.layers.Conv2D(32, 3, input_shape=(4, size, size))
+        self.conv1 = tf.keras.layers.Conv2D(32, 3, input_shape=(5, size, size))
         self.conv2 = tf.keras.layers.Conv2D(32, 3, 2)
         self.conv3 = tf.keras.layers.Conv2D(32, 3)
         self.conv4 = tf.keras.layers.Conv2D(32, 3, 2)
@@ -39,10 +39,8 @@ class ActorCritic(tf.keras.Model):
         value = tf.keras.layers.Activation('linear', dtype='float32', name='value')(value)
         return policy, value
 
-    #split the ouput head
-
     def plot(self):
-        board = tf.keras.Input(shape=(self.size, self.size, 4), name='board')
+        board = tf.keras.Input(shape=(self.size, self.size, 5), name='board')
         direction = tf.keras.Input(shape=(4), name='direction')
         model = tf.keras.Model(inputs=[board, direction], outputs=self.call((board, direction)))
         return tf.keras.utils.plot_model(model, r'plots/model/ActorCritic.png')
