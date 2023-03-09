@@ -1,5 +1,3 @@
-from dataclasses import dataclass
-from dataclasses import field
 from pathlib import Path
 
 import numpy as np
@@ -17,27 +15,9 @@ tf.keras.mixed_precision.set_global_policy('mixed_float16')
 tf.keras.backend.set_image_data_format('channels_first')
 
 
-@dataclass
 class PPOAgent:
-    game_size: int = field(init=False)
-    discount_factor: float = field(init=False)
-    gae_factor: float = field(init=False)
-    clip_factor: float = field(init=False)
-    n_epochs: int = field(init=False)
-    batch_size: int = field(init=False)
-    buffer_size: int = field(init=False)
-    value_loss_coef: float = field(init=False)
-    entropy_loss_coef: float = field(init=False)
-    icm_forward_loss_coef: float = field(init=False)
-    icm_pg_loss_coef: float = field(init=False)
-    icm_eta: float = field(init=False)
-    model: ActorCritic = field(init=False)
-    icm: ICM = field(init=False)
-    reply_buffer: PPOMemory = field(init=False)
-    plots_path: Path = field(init=False)
-    models_path: str = 'model/BIG_2_PPO/'
 
-    def __post_init__(self) -> None:
+    def __init__(self) -> None:
         config = toml.load("config.toml")
         self.game_size = config["snake_game"]["size"]
         self.discount_factor = config["ppo"]["discount_factor"]
@@ -69,7 +49,7 @@ class PPOAgent:
         # self.actor.load_weights(f'{self.models_path}/actor')
         # self.critic.load_weights(f'{self.models_path}/critic')
 
-    def set_last_last_board(self, board) -> None:
+    def set_last_last_board(self, board: NDArray[np.float32]) -> None:
         self.reply_buffer.set_last_last_board(board)
 
     def store_transition(self, board: NDArray[np.float32], direction: NDArray[np.float32], action: float, prob: float, val: float,
