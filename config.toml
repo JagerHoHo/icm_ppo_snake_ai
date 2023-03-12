@@ -1,9 +1,9 @@
 [snake_game]
-max_size = 50
+max_size = 35
 winning_reward = 3
 eaten_food_reward = 2
-early_done_penalty = 0.005
-living_penalty = 0.0005
+early_done_penalty = 1
+living_penalty = 0.005
 
 [ppo]
 discount_factor = 0.9

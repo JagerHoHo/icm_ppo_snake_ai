@@ -27,7 +27,7 @@ class SnakeGame:
         self.reset(0.001)
 
     @property
-    def _reach_boder(self) -> bool:
+    def _snake_reach_boder(self) -> bool:
         return self._snake.head > self._curr_size or self._snake.head < 1
 
     @property
@@ -46,7 +46,11 @@ class SnakeGame:
         2. the snake has reached the boder
         3. the snake has clashed into itself
         """
-        return self._snake.starved or self._reach_boder or self._snake.clash_into_self
+        return self._snake.starved or self._snake_reach_boder or self._snake.clash_into_self
+
+    @property
+    def snake_length(self) -> int:
+        return len(self._snake)
 
     def _new_food_pos(self) -> Point:
         if (pos := self._food_poses.pop()) not in self._snake:
