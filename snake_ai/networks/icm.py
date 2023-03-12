@@ -4,15 +4,15 @@ import tensorflow_addons as tfa
 
 class ICM(tf.keras.Model):
 
-    def __init__(self, n_actions: int, size: int) -> None:
+    def __init__(self, n_actions: int, max_size: int) -> None:
         super().__init__()
         self.n_actions = n_actions
-        self.size = size + 2
-        self.conv1 = tf.keras.layers.Conv2D(32, 3, 2, input_shape=(4, size, size))
+        self.max_size = max_size + 2
+        self.conv1 = tf.keras.layers.Conv2D(32, 3, 2, input_shape=(4, max_size, max_size))
         self.conv2 = tf.keras.layers.Conv2D(32, 3, 2)
         self.conv3 = tf.keras.layers.Conv2D(32, 3, 2)
         self.features = tf.keras.layers.Conv2D(32, 3, 2)
-        self.inverse1 = tf.keras.layers.Dense(256, kernel_regularizer='l2')
+        self.inverse1 = tf.keras.layers.Dense(256)
         self.inverse2 = tf.keras.layers.Dense(n_actions)
         self.next_features_prediction1 = tf.keras.layers.Dense(256)
         self.next_features_prediction2 = tf.keras.layers.Dense(128)
@@ -45,7 +45,7 @@ class ICM(tf.keras.Model):
 
     def plot(self):
         action = tf.keras.Input(shape=(self.n_actions), name='action')
-        state = tf.keras.Input(shape=(self.size, self.size, 4), name='state')
-        next_state = tf.keras.Input(shape=(self.size, self.size, 4), name='next_state')
+        state = tf.keras.Input(shape=(self.max_size, self.max_size, 4), name='state')
+        next_state = tf.keras.Input(shape=(self.max_size, self.max_size, 4), name='next_state')
         model = tf.keras.Model(inputs=[action, state, next_state], outputs=self.call((action, state, next_state)))
         return tf.keras.utils.plot_model(model, r'plots/model/ICM.png')

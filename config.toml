@@ -1,9 +1,9 @@
 [snake_game]
-size = 50
+max_size = 50
 winning_reward = 3
-eaten_food_reward = 1
-early_done_penalty = 2
-living_penalty = 0.05
+eaten_food_reward = 2
+early_done_penalty = 0.005
+living_penalty = 0.0005
 
 [ppo]
 discount_factor = 0.9
@@ -12,7 +12,6 @@ clip_factor = 0.3
 n_epochs = 10
 batch_size = 5
 buffer_size = 20
-n_iter = 0
 value_loss_coef = 0.5
 entropy_loss_coef = 0.1
 
@@ -20,3 +19,8 @@ entropy_loss_coef = 0.1
 forward_loss_coef = 0.2
 pg_loss_coef = 0.1
 eta = 1.0
+
+[training]
+n_iter = 0
+growing_factor = 0.5
+growing_end_epoch = 1000 #have to be set if n_iter is set to 0

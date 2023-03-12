@@ -1,7 +1,10 @@
 from __future__ import annotations
 
+from collections import deque
 from dataclasses import dataclass
+from functools import lru_cache
 from functools import singledispatchmethod
+from itertools import combinations_with_replacement
 from typing import Generator
 
 __all__ = ['Point']

@@ -19,7 +19,7 @@ class PPOAgent:
 
     def __init__(self) -> None:
         config = toml.load("config.toml")
-        self.game_size = config["snake_game"]["size"]
+        self.game_size = config["snake_game"]["max_size"]
         self.discount_factor = config["ppo"]["discount_factor"]
         self.gae_factor = config["ppo"]["gae_factor"]
         self.clip_factor = config["ppo"]["clip_factor"]

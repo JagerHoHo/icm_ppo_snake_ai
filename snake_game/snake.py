@@ -49,6 +49,7 @@ class Snake:
             self.direction = direction
 
     def move(self) -> None:
+        self._starve_count += 1
         self.body.appendleft(deepcopy(self.head))
         if self.direction == Direction.UP:
             self.head.y -= 1
